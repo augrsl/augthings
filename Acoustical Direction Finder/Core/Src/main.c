@@ -342,9 +342,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 		}
 	
 	}
-	for(int i = 0 ; i<ADC_BUF_LEN/3 ; i++ ){
+	for(int i = 0 ; i<ADC_BUF_LEN/3 ; i++ ){ // added
 			
-			if(adc_data[i] > ADC_THOLD ){	
+			if(adc_data[i] > ADC_THOLD || adc_data2[i] > ADC_THOLD || adc_data3[i] > ADC_THOLD ){	
 				sendBuf=1;
 				break;
 			}
