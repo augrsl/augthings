@@ -3,6 +3,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,7 +16,7 @@ import com.fazecast.jSerialComm.*;
 
 public class Main {
 
-	public static int buffersize = 2048;
+	public static int buffersize = 2048*2;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -31,7 +32,10 @@ public class Main {
 		int[] data3 = new int[buffersize];
 		int[] data4 = rand.ints(buffersize, 1,50).toArray();
 		
-        
+		int[] data1i = new int[buffersize-510];
+		int[] data2i = new int[buffersize-510];
+		int[] data3i = new int[buffersize-510];
+		int[] data4i = rand.ints(buffersize-510, 1,50).toArray();
 		
 		
 		String fileprefix = "";
@@ -98,10 +102,15 @@ public class Main {
          
             j++;
         	
+            data1i = Arrays.copyOfRange(data1, 510, data1.length);
+    		data2i = Arrays.copyOfRange(data2, 510, data2.length);
+    		data3i = Arrays.copyOfRange(data3, 510, data3.length);
+    		
+            
             
         	if(j == buffersize){
         		j=0;
-        		createImage("test0",data4,data3,data2,data1,5,5,5,5,5);
+        		createImage("test0",data4i,data3i,data2i,data1i,5,5,5,5,5);
         		db(1);
         	}
         }
