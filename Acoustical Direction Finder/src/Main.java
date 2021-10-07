@@ -1,8 +1,10 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
@@ -20,27 +22,44 @@ public class Main {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
-		//int[][] adcdata= new int[3][100];
-		
-		// Create Image Test
         
+		double samplesPerUsec = 2000;
+		double soundSpeed = 342.0;
+		int scale = 10;
+		
+		ArrayList<MicInfo> mics = new ArrayList<MicInfo>();
+		MicInfo mic1 = new MicInfo();
+		MicInfo mic2 = new MicInfo();
+		MicInfo mic3 = new MicInfo();
+		
+		mic1.location = new Point(0, 0);
+		mic2.location = new Point(-85, 85);
+		mic3.location = new Point(85, 85);
+		
+		mics.add(mic1);
+		mics.add(mic2);
+		mics.add(mic3);
+		
+		LocationTable table = null;
+		
 		Random rand = new Random();
 		
+		// Raw data
 		int[] data1 = new int[buffersize];
 		int[] data2 = new int[buffersize];
 		int[] data3 = new int[buffersize];
 		int[] data4 = rand.ints(buffersize, 1,50).toArray();
 		
+		// Data for image creation 
 		int[] data1i = new int[buffersize-510];
 		int[] data2i = new int[buffersize-510];
 		int[] data3i = new int[buffersize-510];
 		int[] data4i = rand.ints(buffersize-510, 1,50).toArray();
 		
 		
+		// Creating image from data received from particualar port
 		String fileprefix = "";
 		int fpc = 0;
-		
      // determine which serial port to use
         SerialPort ports[] = SerialPort.getCommPorts();
         System.out.println("Select a port:");
@@ -65,57 +84,53 @@ public class Main {
         port.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
         
         Scanner data = new Scanner(port.getInputStream());
-        
         String[] dataSplit;
         int j=0;
         while(data.hasNextLine()) {
-            String newLine = " ";
             
-            //try{
-            	newLine = data.nextLine();
-            	System.out.println(newLine);
+        	String newLine = " ";
+       
+            newLine = data.nextLine();
+            //System.out.println(newLine);
             	
-            	dataSplit = newLine.split(" ",0);
+            dataSplit = newLine.split(" ",0);
+       
+            try{
+            	data1[j] = Integer.parseInt(dataSplit[0])-256; // Neden bak !!!
+            	data2[j] = Integer.parseInt(dataSplit[1])-256;
+            	data3[j] = Integer.parseInt(dataSplit[2])-256;
+           	}
+       		catch(Exception e){
+            	data1[j] = 0;
+            	data2[j] = 0;
+            	data3[j] = 0;
+       		}
             	
-//            	for (String a : dataSplit){
-//                    System.out.println(a);
-//            	}
-            	//db(Integer.parseInt(dataSplit[0]));
-            	
-            		try{
-            			data1[j] = Integer.parseInt(dataSplit[0])-256; // Neden bak !!!
-            			data2[j] = Integer.parseInt(dataSplit[1])-256;
-            			data3[j] = Integer.parseInt(dataSplit[2])-256;
-            		}
-            		catch(Exception e){
-            			
-            			data1[j] = 0;
-            			data2[j] = 0;
-            			data3[j] = 0;
-            			
-            	
-            		}
-            	
-            	
-            	//}
-            //catch(Exception e){}
-         
             j++;
-        	
-            data1i = Arrays.copyOfRange(data1, 510, data1.length);
-    		data2i = Arrays.copyOfRange(data2, 510, data2.length);
-    		data3i = Arrays.copyOfRange(data3, 510, data3.length);
     		
-            
-            
         	if(j == buffersize){
         		j=0;
+        		
+        		data1i = Arrays.copyOfRange(data1, 510, data1.length);
+        		data2i = Arrays.copyOfRange(data2, 510, data2.length);
+        		data3i = Arrays.copyOfRange(data3, 510, data3.length);
+        		
+//        		SoundUtils.normalize(data1i);
+//    			SoundUtils.normalize(data2i);
+//    			SoundUtils.normalize(data3i);
+    			
+    			CrossCorrelation cc12 = new CrossCorrelation(data1i,data2i);
+    			CrossCorrelation cc13 = new CrossCorrelation(data1i,data3i);
+    			
+    			System.out.println("\nPost normalization (MIC1 basis is sample 0)\nCC21@ "+cc12.maxindex);
+				System.out.println("CC31@ "+cc13.maxindex);
+    			
         		createImage("test0",data4i,data3i,data2i,data1i,5,5,5,5,5);
+     
         		db(1);
         	}
+        
         }
-        
-        
         
 	}
 	
