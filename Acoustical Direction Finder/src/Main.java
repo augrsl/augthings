@@ -127,11 +127,51 @@ public class Main {
     			
         		createImage("test0",data4i,data3i,data2i,data1i,5,5,5,5,5);
      
+        		System.out.println("Absolute Direction : " + directionAngle(cc12.maxindex,cc13.maxindex));
+    			
+        		
         		db(1);
         	}
         
         }
         
+	}
+	
+	public static double directionAngle(int cc1to2, int cc1to3){
+		
+		double micp1 = 0;
+		double micp2 = cc1to2;
+		double micp3 = cc1to3;
+		
+		double degreeCalculated = 0;
+		
+		if(micp1 < micp2 && micp1 < micp3){ // mic1 first arrival
+			
+			degreeCalculated = 180;
+			
+			if(micp2 < micp3){ //mic2 second arrival
+			
+				degreeCalculated -= 60 * ( (micp3-micp2) / micp3 ) ;  
+			
+			}
+			else if(micp3 < micp2){ // mic3 second arrival
+				
+				degreeCalculated += 60 * ( (micp2-micp3) / micp2 ) ;
+				
+			}
+		}
+		else if(micp2 < micp1 && micp2 < micp3){
+			
+			
+		}
+		
+		else if(micp3 < micp1 && micp3 < micp2){
+			
+			
+		}
+		// Corner case ifleri yaz
+		
+		return degreeCalculated;
 	}
 	
 	public static void db(int a){
