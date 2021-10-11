@@ -35,7 +35,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
-#define ADC_BUF_LEN 2048*3
+#define ADC_BUF_LEN 4096*3
 #define ADC_DATA_LEN ADC_BUF_LEN/3
 #define ADC_THOLD 175
 #define CHARBUFF_LEN 20
