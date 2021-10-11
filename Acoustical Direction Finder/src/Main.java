@@ -139,7 +139,7 @@ public class Main {
 	
 	public static double directionAngle(int cc1to2, int cc1to3){
 		
-		double micp1 = 0;
+		double micp1 = 1;
 		double micp2 = cc1to2;
 		double micp3 = cc1to3;
 		
@@ -150,23 +150,56 @@ public class Main {
 			degreeCalculated = 180;
 			
 			if(micp2 < micp3){ //mic2 second arrival
-			
+				
+				db(123);
 				degreeCalculated -= 60 * ( (micp3-micp2) / micp3 ) ;  
 			
 			}
 			else if(micp3 < micp2){ // mic3 second arrival
-				
+				db(132);
 				degreeCalculated += 60 * ( (micp2-micp3) / micp2 ) ;
 				
 			}
 		}
-		else if(micp2 < micp1 && micp2 < micp3){
+		else if(micp2 < micp1 && micp2 < micp3){ // mic2 first arrival
 			
+			micp1 = micp1 - micp2;
+			micp3 = micp3 - micp2;
+			degreeCalculated = 60;
+			
+			if(micp3 < micp1){ //mic3 second arrival
+				
+				db(231);
+				degreeCalculated -= 60 * ( (micp1-micp3) / micp1 ) ;
+			
+			}
+			else if(micp1 < micp3){ // mic1 second arrival
+				
+				db(213);
+				degreeCalculated += 60 * ( (micp3-micp1) / micp3 ) ;
+				
+			}
 			
 		}
 		
 		else if(micp3 < micp1 && micp3 < micp2){
 			
+			micp1 = micp1 - micp3;
+			micp2 = micp2 - micp3;
+			degreeCalculated = 300;
+			
+			if(micp1 < micp2){ //mic3 second arrival
+				
+				db(312);
+				degreeCalculated -= 60 * ( (micp2-micp1) / micp2 ) ;
+			
+			}
+			else if(micp2 < micp1){ // mic1 second arrival
+				
+				db(321);
+				degreeCalculated += 60 * ( (micp1-micp2) / micp1 ) ;
+				
+			}
 			
 		}
 		// Corner case ifleri yaz
